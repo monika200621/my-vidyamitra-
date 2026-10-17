@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VidyaMitra: study friend</title>
+<style>
+  body { margin:0; font-family:Arial,sans-serif; display:flex; min-height:100vh; background:#f2f6f4; color:#14304a; }
+  nav { width:200px; background:#14304a; padding:20px; }
+  nav button { display:block; width:100%; margin-bottom:10px; padding:10px; border:0; border-radius:6px; background:#f2a900; font-size:16px; cursor:pointer; }
+  main { flex:1; padding:30px; }
+  .tab { display:none; } .tab.active { display:block; }
+</style>
+</head>
+<body>
+<nav>
+  <button onclick="show('home')">Home</button>
+  <button onclick="show('learn')">Learn</button>
+  <button onclick="show('quiz')">Quiz</button>
+</nav>
+<main>
+  <div id="home" class="tab active"><h1>Hello Student!</h1><p>Welcome to VidyaMitra, your study friend.</p></div>
+  <div id="learn" class="tab"><h1>Learn</h1><p>Your study topics will go here.</p></div>
+  <div id="quiz" class="tab"><h1>Quiz</h1><p>Your practice questions will go here.</p></div>
+</main>
+<script>
+  function show(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+</script>
+</body>
+</html>

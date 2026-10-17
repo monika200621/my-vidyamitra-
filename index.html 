@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VidyaMitra: study friend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&family=Bitter:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #f2f6f4; --side: #e3ede8; --card: #ffffff; --ink: #14304a; --muted: #5b7083; --line: #cfdcd6;
+  --accent: #f2a900; --accent-ink: #3a2a00; --me: #14304a; --me-ink: #ffffff;
+  --good: #1e7b4f; --good-bg: #dcf2e6; --bad: #b3372b; --bad-bg: #fbe3df;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1c28; --side: #14293a; --card: #172a3b; --ink: #e6eef5; --muted: #93a8ba; --line: #2b4357;
+    --accent: #f2b53a; --accent-ink: #261b00; --me: #f2b53a; --me-ink: #261b00;
+    --good: #5fd39b; --good-bg: #123a2a; --bad: #ff8f82; --bad-bg: #44211d;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1c28; --side: #14293a; --card: #172a3b; --ink: #e6eef5; --muted: #93a8ba; --line: #2b4357;
+  --accent: #f2b53a; --accent-ink: #261b00; --me: #f2b53a; --me-ink: #261b00;
+  --good: #5fd39b; --good-bg: #123a2a; --bad: #ff8f82; --bad-bg: #44211d;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Mukta", system-ui, -apple-system, "Segoe UI", "Noto Sans Devanagari", "Noto Sans Kannada", "Noto Sans Tamil", "Noto Sans Telugu", sans-serif; font-size: 18px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: 270px 1fr; min-height: 100vh; }
+aside { background: var(--side); border-right: 2px solid var(--line); padding: 20px 16px; }
+main { padding: 22px 28px 48px; max-width: 860px; width: 100%; }
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.spine { width: 12px; height: 40px; background: var(--accent); border-radius: 4px; flex: none; }
+.brand h2 { font-family: "Bitter", Georgia, serif; font-size: 1.5rem; margin: 0; }
+.cap { color: var(--muted); font-size: .92rem; margin: 0 0 16px; }
+aside label { display: block; font-weight: 600; font-size: .92rem; margin: 12px 0 4px; }
+input[type=text], select { width: 100%; font: inherit; font-size: 1rem; padding: 9px 10px; border: 2px solid var(--ink); border-radius: 8px; background: var(--card); color: var(--ink); }
+h1 { font-family: "Bitter", Georgia, serif; font-size: 2.3rem; margin: 0 0 12px; line-height: 1.15; }
+.tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--line); margin-bottom: 16px; flex-wrap: wrap; }
+.tab { font: inherit; font-weight: 600; cursor: pointer; background: none; border: none; border-bottom: 4px solid transparent; padding: 8px 14px; color: var(--muted); margin-bottom: -2px; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.pane[hidden] { display: none; }
+#chat { height: 46vh; min-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 4px 0 10px; }
+.msg { max-width: 90%; padding: 10px 14px; border-radius: 12px; border: 2px solid var(--ink); background: var(--card); word-wrap: break-word; }
+.msg.me { align-self: flex-end; background: var(--me); color: var(--me-ink); border-color: var(--me); }
+.msg.err { border-color: var(--bad); color: var(--bad); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0 10px; }
+.chip { font: inherit; font-size: .95rem; cursor: pointer; background: var(--card); color: var(--ink); border: 2px solid var(--line); border-radius: 20px; padding: 6px 14px; }
+.chip:hover:not(:disabled) { border-color: var(--ink); }
+.chip:disabled { opacity: .5; cursor: default; }
+form.bar { display: flex; gap: 8px; }
+textarea { flex: 1; font: inherit; font-size: 1.05rem; resize: none; padding: 10px 12px; height: 52px; border: 2px solid var(--ink); border-radius: 10px; background: var(--card); color: var(--ink); }
+.btn { font: inherit; font-weight: 800; cursor: pointer; background: var(--accent); color: var(--accent-ink); border: 2px solid var(--ink); border-radius: 10px; padding: 10px 20px; }
+.btn.ghost { background: transparent; color: var(--ink); font-weight: 600; }
+.btn:disabled { opacity: .5; cursor: default; }
+.note { color: var(--muted); font-size: .9rem; margin-top: 12px; }
+.card { background: var(--card); border: 2px solid var(--ink); border-radius: 10px; padding: 18px; }
+.qtext { font-size: 1.3rem; font-weight: 600; margin: 4px 0 14px; }
+.opts { display: grid; gap: 10px; }
+.opt { text-align: left; font: inherit; cursor: pointer; background: var(--bg); color: var(--ink); border: 2px solid var(--line); border-radius: 8px; padding: 12px 14px; width: 100%; }
+.opt:hover:not(:disabled) { border-color: var(--ink); }
+.opt:disabled { cursor: default; }
+.opt.right { background: var(--good-bg); border-color: var(--good); }
+.opt.wrong { background: var(--bad-bg); border-color: var(--bad); }
+.fb { margin-top: 14px; padding: 12px 14px; border-radius: 8px; }
+.fb.ok { background: var(--good-bg); } .fb.no { background: var(--bad-bg); }
+.meter { height: 10px; background: var(--line); border-radius: 6px; overflow: hidden; margin: 6px 0 14px; }
+.meter i { display: block; height: 100%; background: var(--ink); }
+.meter i.low { background: var(--bad); } .meter i.mid { background: var(--accent); } .meter i.hi { background: var(--good); }
+.top { display: flex; justify-content: space-between; color: var(--muted); font-size: .95rem; gap: 8px; flex-wrap: wrap; }
+.score { font-family: "Bitter", serif; font-size: 3rem; font-weight: 800; line-height: 1; }
+.trow { display: flex; justify-content: space-between; font-weight: 600; margin-top: 10px; }
+.tip { background: var(--bg); border-left: 6px solid var(--accent); padding: 12px 14px; border-radius: 4px; margin: 14px 0; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.metric b { display: block; font-family: "Bitter", serif; font-size: 2rem; }
+.dots::after { content: "..."; animation: blink 1s steps(3, end) infinite; }
+@keyframes blink { 0% { opacity: .2 } 50% { opacity: 1 } 100% { opacity: .2 } }
+@media (prefers-reduced-motion: reduce) { .dots::after { animation: none; } }
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  aside { border-right: none; border-bottom: 2px solid var(--line); }
+  main { padding: 16px 14px 40px; }
+  h1 { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside>
+    <div class="brand"><div class="spine"></div><h2>VidyaMitra</h2></div>
+    <p class="cap">Your study friend | SDG 4: Quality Education</p>
+    <label for="name">Your name</label>
+    <input type="text" id="name" placeholder="Student" autocomplete="off">
+    <label for="cls">Class</label>
+    <select id="cls"><option>6</option><option>7</option><option selected>8</option><option>9</option><option>10</option></select>
+    <label for="sub">Subject</label>
+    <select id="sub"><option>Maths</option><option selected>Science</option><option>English</option></select>
+  </aside>
+
+  <main>
+    <h1 id="hello">Hello Student! 👋</h1>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="t-tutor" aria-selected="true" aria-controls="p-tutor">Ask the Tutor</button>
+      <button class="tab" role="tab" id="t-quiz" aria-selected="false" aria-controls="p-quiz">Adaptive Quiz</button>
+      <button class="tab" role="tab" id="t-prog" aria-selected="false" aria-controls="p-prog">My Progress</button>
+    </div>
+
+    <section class="pane" id="p-tutor" role="tabpanel" aria-labelledby="t-tutor">
+      <p class="cap" id="tutorCap"></p>
+      <div id="chat" aria-live="polite"></div>
+      <div class="chips" id="chips">
+        <button class="chip" data-t="photosynthesis">Photosynthesis</button>
+        <button class="chip" data-t="gravity">Gravity</button>
+        <button class="chip" data-t="fraction">Fractions</button>
+        <button class="chip" data-t="water cycle">Water cycle</button>
+        <button class="chip" data-t="noun">Nouns</button>
+      </div>
+      <form class="bar" id="form">
+        <textarea id="input" rows="1" placeholder="Type your doubt here..." aria-label="Your doubt"></textarea>
+        <button class="btn" id="send" type="submit">Send</button>
+      </form>
+      <p class="note">VidyaMitra is a learning aid. Always verify with your teacher or textbook.</p>
+    </section>
+
+    <section class="pane" id="p-quiz" role="tabpanel" aria-labelledby="t-quiz" hidden></section>
+    <section class="pane" id="p-prog" role="tabpanel" aria-labelledby="t-prog" hidden></section>
+  </main>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const pick = (arr) => arr[rnd(0, arr.length - 1)];
+
+/* ================= tabs + sidebar ================= */
+const TABS = { tutor: "p-tutor", quiz: "p-quiz", prog: "p-prog" };
+function showTab(k) {
+  for (const key in TABS) {
+    $("t-" + key).setAttribute("aria-selected", String(key === k));
+    $(TABS[key]).hidden = key !== k;
+  }
+  if (k === "prog") renderProgress();
+  if (k === "quiz") renderQuiz();
+}
+for (const k in TABS) $("t-" + k).onclick = () => showTab(k);
+
+function updateHeader() {
+  const n = $("name").value.trim();
+  $("hello").textContent = "Hello " + (n || "Student") + "! \uD83D\uDC4B";
+  $("tutorCap").textContent = "Ask any Class " + $("cls").value + " " + $("sub").value + " doubt.";
+}
+["name", "cls", "sub"].forEach(id => $(id).addEventListener("input", updateHeader));
+updateHeader();
+
+/* ================= Tutor ================= */
+/* YOUR LESSONS. Each line is:  "keyword": "explanation".
+   Change these to your own words and add more topics. */
+const LESSONS = {
+  "photosynthesis": "Photosynthesis is how a plant makes its own food. The leaf takes sunlight, water from the roots and carbon dioxide from the air. It makes sugar (food) and gives out oxygen. Think of a leaf as a tiny kitchen that cooks with sunlight.",
+  "fraction": "A fraction is a part of a whole. If you cut a roti into 4 equal pieces and eat 1 piece, you ate 1/4 of it. The bottom number says how many equal parts. The top number says how many parts you take.",
+  "percent": "Percent means out of 100. 50% is half and 25% is a quarter. To find 10% of a number, divide it by 10. So 10% of 80 is 8.",
+  "gravity": "Gravity is the force that pulls things towards the Earth. That is why a mango falls down from the tree and not up.",
+  "friction": "Friction is a force that slows things down when two surfaces rub. A rough road gives more friction than a smooth floor. That is why it is easy to slip on wet, smooth tiles.",
+  "force": "A force is a push or a pull. Pushing a cart and pulling a bucket from a well are both forces. A force can start, stop or change the direction of something.",
+  "water cycle": "The sun heats water in rivers and seas, and it rises as vapour (evaporation). High up it cools and forms clouds (condensation). Then it falls as rain (precipitation) and flows back to the rivers and seas.",
+  "evaporation": "Evaporation is when liquid water turns into vapour because of heat. Wet clothes dry in the sun because of evaporation.",
+  "equation": "An equation is like a balanced weighing scale. Whatever you do to one side, do to the other. To solve x + 5 = 12, subtract 5 from both sides, so x = 7.",
+  "noun": "A noun is the name of a person, place or thing. In Ravi has a book, Ravi and book are nouns.",
+  "verb": "A verb is a doing word. In The girl runs, runs is the verb. With he, she or it, the present tense verb often ends in -s: she goes, he plays.",
+  "tense": "Tense tells us the time of an action. Past: I played. Present: I play. Future: I will play."
+};
+const chat = $("chat"), input = $("input"), form = $("form"), chips = $("chips");
+
+function answerFor(q) {
+  const ql = q.toLowerCase();
+  for (const k in LESSONS) {
+    if (ql.includes(k)) return LESSONS[k] + "\n\nCheck yourself: can you explain this in your own words?";
+  }
+  return "I do not know this topic yet. Try one of these: " + Object.keys(LESSONS).join(", ") + ".";
+}
+function addMsg(role, html, cls) {
+  const d = document.createElement("div");
+  d.className = "msg" + (role === "user" ? " me" : "") + (cls ? " " + cls : "");
+  d.innerHTML = html; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; return d;
+}
+function fmt(t) { return esc(t).replace(/\n/g, "<br>"); }
+function ask(text) {
+  if (!text.trim()) return;
+  addMsg("user", esc(text));
+  addMsg("bot", fmt(answerFor(text)));
+}
+chips.addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (b) ask("Explain " + b.dataset.t); });
+form.addEventListener("submit", (e) => { e.preventDefault(); const t = input.value; input.value = ""; ask(t); });
+input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); } });
+addMsg("bot", "<b>Hello, student!</b> I am Vidya Mitra, your study friend.<br>Type a doubt below, or tap a topic button. I know about photosynthesis, fractions, gravity, the water cycle, nouns and more.");
+
+/* ================= Adaptive quiz ================= */
+const LEVEL_NAMES = { 1: "Easy", 2: "Medium", 3: "Hard" };
+const QUIZ_LENGTH = 8;
+const TIPS = {
+  Multiplication: "Break big numbers apart. 17 × 6 = (10 × 6) + (7 × 6) = 102. Practise one table every day.",
+  Percentages: "10% means divide by 10. 50% is half. 25% is half of half. Build other percentages from these.",
+  Equations: "Do the same thing on both sides. To undo + use −. To undo × use ÷. Check by putting the answer back in.",
+  Plants: "Draw a plant and label roots, stem, leaf and flower. Write one job next to each part.",
+  Forces: "Remember: force = mass × acceleration. Weight = mass × 10 (in newtons) for school problems.",
+  Water: "Learn the water cycle in order: evaporation, condensation, precipitation, collection.",
+  Grammar: "Read the sentence aloud. Match the verb with the subject (he goes, they go). Check time words like since and for.",
+  Vocabulary: "Learn 3 new words a day. Write each with its opposite and one sentence of your own."
+};
+const SCIENCE = [
+  { t: "Plants", l: 1, q: "Which part of a plant absorbs water from the soil?", o: ["Roots", "Leaves", "Flowers", "Stem"], a: 0, e: "Roots take in water and minerals from the soil." },
+  { t: "Water", l: 1, q: "At sea level, water boils at what temperature?", o: ["50 °C", "100 °C", "150 °C", "0 °C"], a: 1, e: "Pure water boils at 100 °C at sea level." },
+  { t: "Forces", l: 1, q: "Which force pulls objects towards the Earth?", o: ["Friction", "Magnetism", "Gravity", "Tension"], a: 2, e: "Gravity pulls everything towards the centre of the Earth." },
+  { t: "Plants", l: 1, q: "Plants make their own food by a process called:", o: ["Digestion", "Photosynthesis", "Respiration", "Evaporation"], a: 1, e: "Photosynthesis uses sunlight, water and carbon dioxide to make food." },
+  { t: "Water", l: 2, q: "Which process turns water vapour into liquid water?", o: ["Evaporation", "Melting", "Condensation", "Freezing"], a: 2, e: "Condensation: vapour cools and becomes tiny drops of liquid." },
+  { t: "Forces", l: 2, q: "Which surface produces the MOST friction?", o: ["Ice", "Polished glass", "Rough concrete", "Oiled metal"], a: 2, e: "Rough surfaces have more tiny bumps that grip each other." },
+  { t: "Plants", l: 2, q: "Which gas do plants take in for photosynthesis?", o: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], a: 1, e: "Plants take in carbon dioxide and give out oxygen." },
+  { t: "Water", l: 2, q: "What happens to the volume of water when it freezes?", o: ["It shrinks", "It stays the same", "It expands", "It disappears"], a: 2, e: "Water expands when it freezes, which is why pipes can burst in winter." },
+  { t: "Forces", l: 3, q: "A 10 kg object is on Earth (take g = 10 m/s²). What is its weight?", o: ["10 N", "1 N", "100 N", "1000 N"], a: 2, e: "Weight = mass × g = 10 × 10 = 100 N." },
+  { t: "Plants", l: 3, q: "What are the tiny pores on a leaf called?", o: ["Stomata", "Xylem", "Root hairs", "Petals"], a: 0, e: "Stomata let gases in and out of the leaf." },
+  { t: "Water", l: 3, q: "Why does ice float on liquid water?", o: ["It is heavier", "It is less dense", "It is colder than air", "It has no mass"], a: 1, e: "Ice is less dense than liquid water, so it floats." },
+  { t: "Forces", l: 3, q: "The same force acts on a car. If the car’s mass doubles, its acceleration:", o: ["Doubles", "Stays the same", "Halves", "Becomes zero"], a: 2, e: "a = F ÷ m. Double the mass and the acceleration is half." }
+];
+const ENGLISH = [
+  { t: "Grammar", l: 1, q: "She ___ to school every day.", o: ["go", "goes", "going", "gone"], a: 1, e: "With he, she or it in the present tense, the verb takes -s: goes." },
+  { t: "Vocabulary", l: 1, q: "What is the opposite of ‘hot’?", o: ["Warm", "Cold", "Wet", "Dry"], a: 1, e: "Cold is the opposite of hot." },
+  { t: "Grammar", l: 1, q: "What is the plural of ‘child’?", o: ["Childs", "Childes", "Children", "Childrens"], a: 2, e: "Child has an irregular plural: children." },
+  { t: "Vocabulary", l: 1, q: "Which of these words is a noun?", o: ["Run", "Happy", "Quickly", "Book"], a: 3, e: "A noun names a thing. Book is a thing." },
+  { t: "Grammar", l: 2, q: "They ___ playing when it started to rain.", o: ["was", "were", "is", "be"], a: 1, e: "‘They’ is plural, so past continuous uses ‘were’." },
+  { t: "Vocabulary", l: 2, q: "Which word means the same as ‘rapid’?", o: ["Slow", "Quiet", "Fast", "Heavy"], a: 2, e: "Rapid and fast are synonyms." },
+  { t: "Grammar", l: 2, q: "I have lived here ___ 2015.", o: ["for", "since", "from", "during"], a: 1, e: "Use ‘since’ with a starting point in time. Use ‘for’ with a length of time." },
+  { t: "Vocabulary", l: 2, q: "What is the opposite of ‘generous’?", o: ["Kind", "Selfish", "Brave", "Polite"], a: 1, e: "A generous person gives freely. A selfish person does not." },
+  { t: "Grammar", l: 3, q: "Neither of the boys ___ ready.", o: ["are", "were", "is", "be"], a: 2, e: "‘Neither’ is singular, so it takes ‘is’." },
+  { t: "Vocabulary", l: 3, q: "What does ‘meticulous’ mean?", o: ["Careless", "Very careful about details", "Very loud", "Very tired"], a: 1, e: "A meticulous person pays close attention to every detail." },
+  { t: "Grammar", l: 3, q: "If I ___ you, I would study harder.", o: ["am", "was", "were", "be"], a: 2, e: "In an imaginary ‘if’ sentence we use ‘were’ for all subjects." },
+  { t: "Vocabulary", l: 3, q: "What does ‘benevolent’ mean?", o: ["Angry", "Kind and helpful", "Lazy", "Confused"], a: 1, e: "Benevolent means wanting to do good for others." }
+];
+function makeOptions(answer) {
+  const set = new Set([answer]); const off = [1, -1, 2, -2, 10, -10, 5, -5, 3, -3];
+  while (set.size < 4) { const c = answer + pick(off); if (c >= 0) set.add(c); }
+  const arr = [...set];
+  for (let i = arr.length - 1; i > 0; i--) { const j = rnd(0, i); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+  return { o: arr.map(String), a: arr.indexOf(answer) };
+}
+const MATH = {
+  Multiplication(l) { const a = l === 1 ? rnd(2, 9) : l === 2 ? rnd(11, 19) : rnd(12, 25); const b = l < 3 ? rnd(l === 1 ? 2 : 3, 9) : rnd(11, 19); return { q: "What is " + a + " × " + b + "?", ans: a * b, e: a + " × " + b + " = " + (a * b) + "." }; },
+  Percentages(l) { const p = pick(l === 1 ? [10] : l === 2 ? [25, 50] : [15, 35, 45]); const base = l === 1 ? rnd(2, 15) * 10 : rnd(2, 20) * 20; const ans = base * p / 100
